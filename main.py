@@ -1,31 +1,39 @@
-from flask import Flask, render_template, jsonify
-import logging
-from datetime import datetime
-from utils.data_simulator import IoTDataSimulator
-from utils.threat_detector import ThreatDetector
-from utils.model_trainer import ModelTrainer
+def main():
+    while True:
+        print("\nSelect a Model to Run:")
+        print("1: Random Forest")
+        print("2: Decision Tree")
+        print("3: Extra Tree Classifier")
+        print("4: Support Vector Machine")
+        print("5: k-Nearest Neighbor")
+        print("6: Deep Neural Network")
 
-app = Flask(__name__)
-logging.basicConfig(level=logging.INFO)
+        choice = input("Enter your choice (1-6): ")
 
-# Initialize components
-simulator = IoTDataSimulator()
-detector = ThreatDetector()
-trainer = ModelTrainer()
+        if choice == '1':
+            from models import random_forest as rf
+            rf.random_forest_model()
+        elif choice == '2':
+            from models import decision_tree as dt
+            dt.decision_tree_model()
+        elif choice == '3':
+            from models import extra_tree_classifier as etc
+            etc.extra_tree_classifier_model()
+        elif choice == '4':
+            from models import svm
+            svm.svm_model()
+        elif choice == '5':
+            from models import knn
+            knn.knn_model()
+        elif choice == '6':
+            from models import deep_neural_network as dnn
+            dnn.deep_neural_network_model()
+        else:
+            print("Invalid choice! Please select a number between 1 and 6.")
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+        cont = input("\nDo you want to run another model? (yes/no): ")
+        if cont.lower() != 'yes':
+            break
 
-@app.route('/api/simulate')
-def simulate_data():
-    data = simulator.generate_data()
-    prediction = detector.detect_threats(data)
-    return jsonify({
-        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        'data': data.to_dict('records'),
-        'prediction': prediction
-    })
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    main()
